@@ -16,7 +16,6 @@ job_service = JobsService(engine)
 hired_employees_service = HiredEmployeesService(engine)
 
 app = Flask(__name__)
-app.config["DEBUG"] = True
 
 init_departments_controller(department_service)
 init_jobs_controller(job_service)
@@ -27,4 +26,4 @@ app.register_blueprint(jobs_bp, url_prefix='/jobs')
 app.register_blueprint(hired_employees_bp, url_prefix='/hiredemployees')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=8080)
