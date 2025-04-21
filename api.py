@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from models.base import Base
 from services.DepartmentsService import DepartmentService
 
-engine = create_engine("sqlite:///C:/Users/lharr/OneDrive/Escritorio/Challenge/PythonCRUD/data/employees.db")
+engine = create_engine("sqlite:///data/employees.db")
 Base.metadata.create_all(engine)
 service = DepartmentService(engine)
 

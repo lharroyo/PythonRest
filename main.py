@@ -1,16 +1,20 @@
+from flask import Flask
 from sqlalchemy import create_engine
 from models.base import Base
 from services.DepartmentsService import DepartmentService
+from controllers.DepartmentsController import init_departments_controller, departments_bp
 from models.HiredEmployeesModel import HiredEmployee
 
-if __name__ == "__main__":
-    engine = create_engine("sqlite:///C:/Users/lharr/OneDrive/Escritorio/Challenge/PythonCRUD/data/employees.db")
-    Base.metadata.create_all(engine)
-    service = DepartmentService(engine)
+engine = create_engine("sqlite:///data/employees.db")
+Base.metadata.create_all(engine)
+service = DepartmentService(engine)
 
-    departments = service.get_all_departments()
-    print("Lista de departamentos:")
-    for dept in departments:
-        print(f"- {dept.name}")
+app = Flask(__name__)
+app.config["DEBUG"] = True
 
-    service.close()
+init_departments_controller(service)
+
+app.register_blueprint(departments_bp, url_prefix='/departments')
+
+if __name__ == '__main__':
+    app.run()
