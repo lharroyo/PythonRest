@@ -44,6 +44,6 @@ for _, row in employees_df.iterrows():
     session.merge(employee)
 
 session.commit()
-print("✅ Datos cargados exitosamente.")
+print("Datos cargados exitosamente.")
 
 session.close()

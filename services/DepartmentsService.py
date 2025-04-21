@@ -34,5 +34,17 @@ class DepartmentService:
             self.session.commit()
         return dept
 
+    def create_departments_bulk(self, departments_df):
+        if departments_df.isnull().values.any() or (departments_df['name'] == '').any():
+            raise ValueError("Los datos no pueden contener valores nulos o vacíos.")
+
+        new_departments = [
+            Department(id=row['id'], name=row['name']) for _, row in departments_df.iterrows()
+        ]
+
+        self.session.bulk_save_objects(new_departments)
+        self.session.commit()
+        return [dept.name for dept in new_departments]
+
     def close(self):
         self.session.close()

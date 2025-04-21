@@ -1,4 +1,9 @@
+import os
+import pandas as pd
+
 from flask import Blueprint, jsonify, request
+from werkzeug.utils import secure_filename
+
 from services.DepartmentsService import DepartmentService
 
 departments_bp = Blueprint('departments', __name__)
@@ -47,3 +52,27 @@ def init_departments_controller(service):
             return jsonify({"error": "Department not found."}), 404
         else:
             return jsonify({"message": "Department deleted successfully.", "Department": {"id": deleted_department.id, "name": deleted_department.name}}), 200
+        
+    @departments_bp.route('/uploadbybulk', methods=['POST'])
+    def upload_by_bulk():
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part"}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join('data/', filename)
+            file.save(file_path)
+            try:
+                departments = pd.read_csv(file_path, header=None, names=['id', 'name'])
+                created_departments = service.create_departments_bulk(departments)
+                return jsonify({"message": "Departments uploaded successfully", "departments": created_departments}), 201
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Invalid file format"}), 400
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'csv'}
+    
