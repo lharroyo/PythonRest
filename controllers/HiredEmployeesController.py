@@ -90,7 +90,7 @@ def init_hired_employees_controller(service: HiredEmployeesService):
             return jsonify({"Error": "Hired employee not found."}), 404
         else:
             return jsonify({
-                "message": "Hired employee deleted successfully.",
+                "Message": "Hired employee deleted successfully.",
                 "HiredEmployee": {
                     "id": deleted_employee.id,
                     "name": deleted_employee.name,
@@ -99,3 +99,37 @@ def init_hired_employees_controller(service: HiredEmployeesService):
                     "department_id": deleted_employee.department_id
                 }
             }), 200
+
+    @hired_employees_bp.route('/byquarter', methods=['GET'])
+    def hired_employees_by_quarter():
+        hires_by_quarter_2021 = service.get_hires_per_job_and_department_by_quarter_2021()
+        result_list = [
+            {
+                "department": row.department,
+                "job": row.job,
+                "quarter": int(row.quarter),
+                "hires": row.hires
+            }
+            for row in hires_by_quarter_2021
+        ]
+        return jsonify({
+            "message": "Hires per job and department by quarter 2021",
+            "results": result_list
+        }), 200
+
+    @hired_employees_bp.route('/byaveragehires', methods=['GET'])
+    def departments_above_average_hires():
+        above_avg_departments = service.get_departments_above_average_hires_2021()
+        result_list = [
+            {
+                "department_id": row.id,
+                "department_name": row.name,
+                "hires": row.num_hired
+            }
+            for row in above_avg_departments
+        ]
+        return jsonify({
+            "message": "Departments with hires above 2021 average",
+            "results": result_list
+        }), 200
+
