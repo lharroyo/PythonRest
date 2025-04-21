@@ -1,16 +1,26 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
+from sqlalchemy import create_engine
+from models.base import Base
+from services.DepartmentsService import DepartmentService
 
-#Definir una instancia de Flask
+engine = create_engine("sqlite:///C:/Users/lharr/OneDrive/Escritorio/Challenge/PythonCRUD/data/employees.db")
+Base.metadata.create_all(engine)
+service = DepartmentService(engine)
+
 app = Flask(__name__)
-#Habilitar el modo de depuración
 app.config["DEBUG"] = True
 
-#Creamos un endpoint para la ruta /
 @app.route('/', methods=['GET'])
-#Definimos la función home que es la que se ejecutará cuando se acceda a la ruta /
-def home():
-    #Retornamos un mensaje en formato JSON
-    return jsonify({"message":"Este es el método de Consulta"})
+def get_all():
+    departments = service.get_all_departments()
+    departments_list = [{"id": dept.id, "name": dept.name} for dept in departments]
+    return jsonify({"departments": departments_list})
+
+@app.route('/<int:id>', methods=['GET'])
+def get_by_id(id):
+    departments = service.get_department_by_id(id)
+    return jsonify({"Department": {"id": departments.id, "name": departments.name}})
+
 
 @app.route('/', methods=['POST'])
 def post_home():
