@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func, extract, Integer
 from models.HiredEmployeesModel import HiredEmployee
 from models.JobModel import Job
 from models.DepartmentModel import Department
@@ -38,6 +39,24 @@ class HiredEmployeesService:
             self.session.delete(employee)
             self.session.commit()
         return employee
+
+    def get_hires_per_job_and_department_by_quarter_2021(self):
+        result = (
+            self.session.query(
+                Department.name.label("department"),
+                Job.name.label("job"),
+                ((func.strftime('%m', HiredEmployee.hire_date).cast(Integer) - 1) / 3 + 1).label("quarter"),
+                func.count(HiredEmployee.id).label("hires")
+            )
+            .join(Department, HiredEmployee.department_id == Department.id)
+            .join(Job, HiredEmployee.job_id == Job.id)
+            .filter(func.strftime('%Y', HiredEmployee.hire_date) == '2021')
+            .group_by(Department.name, Job.name,
+                      (func.strftime('%m', HiredEmployee.hire_date).cast(Integer) - 1) / 3 + 1)
+            .order_by(Department.name.asc(), Job.name.asc())
+            .all()
+        )
+        return result
 
     def close(self):
         self.session.close()
