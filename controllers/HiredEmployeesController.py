@@ -116,3 +116,20 @@ def init_hired_employees_controller(service: HiredEmployeesService):
             "message": "Hires per job and department by quarter 2021",
             "results": result_list
         }), 200
+
+    @hired_employees_bp.route('/byaveragehires', methods=['GET'])
+    def departments_above_average_hires():
+        above_avg_departments = service.get_departments_above_average_hires_2021()
+        result_list = [
+            {
+                "department_id": row.id,
+                "department_name": row.name,
+                "hires": row.num_hired
+            }
+            for row in above_avg_departments
+        ]
+        return jsonify({
+            "message": "Departments with hires above 2021 average",
+            "results": result_list
+        }), 200
+

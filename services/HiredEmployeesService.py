@@ -58,5 +58,36 @@ class HiredEmployeesService:
         )
         return result
 
+
+    def get_departments_above_average_hires_2021(self):
+        hires_per_department = (
+            self.session.query(
+                HiredEmployee.department_id,
+                func.count(HiredEmployee.id).label("num_hired")
+            )
+            .filter(func.strftime('%Y', HiredEmployee.hire_date) == '2021')
+            .group_by(HiredEmployee.department_id)
+            .subquery()
+        )
+
+        avg_hires = (
+            self.session.query(func.avg(hires_per_department.c.num_hired))
+            .scalar_subquery()
+        )
+
+        result = (
+            self.session.query(
+                Department.id,
+                Department.name,
+                hires_per_department.c.num_hired
+            )
+            .join(hires_per_department, Department.id == hires_per_department.c.department_id)
+            .filter(hires_per_department.c.num_hired > avg_hires)
+            .order_by(hires_per_department.c.num_hired.desc())
+            .all()
+        )
+
+        return result
+
     def close(self):
         self.session.close()
