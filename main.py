@@ -1,16 +1,30 @@
+from flask import Flask
 from sqlalchemy import create_engine
 from models.base import Base
 from services.DepartmentsService import DepartmentService
-from models.HiredEmployeesModel import HiredEmployee
+from services.JobsService import JobsService
+from services.HiredEmployeesService import HiredEmployeesService
+from controllers.DepartmentsController import init_departments_controller, departments_bp
+from controllers.JobsController import init_jobs_controller, jobs_bp
+from controllers.HiredEmployeesController import init_hired_employees_controller, hired_employees_bp
 
-if __name__ == "__main__":
-    engine = create_engine("sqlite:///C:/Users/lharr/OneDrive/Escritorio/Challenge/PythonCRUD/data/employees.db")
-    Base.metadata.create_all(engine)
-    service = DepartmentService(engine)
+engine = create_engine("sqlite:///data/employees.db")
+Base.metadata.create_all(engine)
 
-    departments = service.get_all_departments()
-    print("Lista de departamentos:")
-    for dept in departments:
-        print(f"- {dept.name}")
+department_service = DepartmentService(engine)
+job_service = JobsService(engine)
+hired_employees_service = HiredEmployeesService(engine)
 
-    service.close()
+app = Flask(__name__)
+app.config["DEBUG"] = True
+
+init_departments_controller(department_service)
+init_jobs_controller(job_service)
+init_hired_employees_controller(hired_employees_service)
+
+app.register_blueprint(departments_bp, url_prefix='/departments')
+app.register_blueprint(jobs_bp, url_prefix='/jobs')
+app.register_blueprint(hired_employees_bp, url_prefix='/hiredemployees')
+
+if __name__ == '__main__':
+    app.run()
