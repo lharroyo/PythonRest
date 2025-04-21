@@ -1,0 +1,101 @@
+from flask import Blueprint, jsonify, request
+from services.HiredEmployeesService import HiredEmployeesService  # Asegúrate de que la ruta sea correcta
+from datetime import datetime
+
+hired_employees_bp = Blueprint('hiredemployees', __name__)
+
+def init_hired_employees_controller(service: HiredEmployeesService):
+    @hired_employees_bp.route('/', methods=['GET'])
+    def get_all():
+        employees = service.get_all_hired_employees()
+        employees_list = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "hire_date": emp.hire_date.isoformat(),
+                "job_id": emp.job_id,
+                "department_id": emp.department_id
+            } for emp in employees
+        ]
+        return jsonify({"HiredEmployees": employees_list}), 200
+
+    @hired_employees_bp.route('/<int:id>', methods=['GET'])
+    def get_by_id(id):
+        employee = service.get_hired_employee_by_id(id)
+        if employee is None:
+            return jsonify({"Error": "Hired employee not found."}), 404
+        else:
+            return jsonify({
+                "HiredEmployee": {
+                    "id": employee.id,
+                    "name": employee.name,
+                    "hire_date": employee.hire_date.isoformat(),
+                    "job_id": employee.job_id,
+                    "department_id": employee.department_id
+                }
+            })
+
+    @hired_employees_bp.route('/', methods=['POST'])
+    def post_hired_employee():
+        data = request.get_json()
+        if not data or 'name' not in data or 'hire_date' not in data or 'job_id' not in data:
+            return jsonify({"Error": "Invalid input"}), 400
+        
+        name = data['name']
+        hire_date = datetime.fromisoformat(data['hire_date'])
+        job_id = data['job_id']
+        department_id = data.get('department_id')
+
+        new_employee = service.create_hired_employee(name, hire_date, job_id, department_id)
+        return jsonify({
+            "HiredEmployee": {
+                "id": new_employee.id,
+                "name": new_employee.name,
+                "hire_date": new_employee.hire_date.isoformat(),
+                "job_id": new_employee.job_id,
+                "department_id": new_employee.department_id
+            }
+        }), 201
+
+    @hired_employees_bp.route('/<int:id>', methods=['PUT'])
+    def put_hired_employee(id):
+        data = request.get_json()
+        if not data or 'name' not in data or 'hire_date' not in data or 'job_id' not in data:
+            return jsonify({"Error": "Invalid input"}), 400
+        
+        name = data['name']
+        hire_date = datetime.fromisoformat(data['hire_date'])
+        job_id = data['job_id']
+        department_id = data.get('department_id')
+
+        updated_employee = service.update_hired_employee(id, name, hire_date, job_id, department_id)
+        if updated_employee is None:
+            return jsonify({"Error": "Hired employee not found."}), 404
+        else:
+            return jsonify({
+                "HiredEmployee": {
+                    "id": updated_employee.id,
+                    "name": updated_employee.name,
+                    "hire_date": updated_employee.hire_date.isoformat(),
+                    "job_id": updated_employee.job_id,
+                    "department_id": updated_employee.department_id
+                }
+            }), 200
+
+    @hired_employees_bp.route('/<int:id>', methods=['DELETE'])
+    def delete_hired_employee(id):
+        deleted_employee = service.delete_hired_employee(id)
+        
+        if deleted_employee is None:
+            return jsonify({"Error": "Hired employee not found."}), 404
+        else:
+            return jsonify({
+                "message": "Hired employee deleted successfully.",
+                "HiredEmployee": {
+                    "id": deleted_employee.id,
+                    "name": deleted_employee.name,
+                    "hire_date": deleted_employee.hire_date.isoformat(),
+                    "job_id": deleted_employee.job_id,
+                    "department_id": deleted_employee.department_id
+                }
+            }), 200
