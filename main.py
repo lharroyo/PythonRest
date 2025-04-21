@@ -1,11 +1,16 @@
 from sqlalchemy import create_engine
-from models.department import Department
-from models.job import Job
-from models.hired_employee import HiredEmployee
-from sqlalchemy.orm import declarative_base
-
-Base = declarative_base()
+from models.base import Base
+from services.DepartmentsService import DepartmentService
+from models.HiredEmployeesModel import HiredEmployee
 
 if __name__ == "__main__":
-    engine = create_engine('sqlite:///employees.db')
+    engine = create_engine("sqlite:///C:/Users/lharr/OneDrive/Escritorio/Challenge/PythonCRUD/data/employees.db")
     Base.metadata.create_all(engine)
+    service = DepartmentService(engine)
+
+    departments = service.get_all_departments()
+    print("Lista de departamentos:")
+    for dept in departments:
+        print(f"- {dept.name}")
+
+    service.close()
