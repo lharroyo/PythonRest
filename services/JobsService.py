@@ -33,5 +33,17 @@ class JobsService:
             self.session.commit()
         return job
 
+    def create_jobs_bulk(self, jobs_df):
+        if jobs_df.isnull().values.any() or (jobs_df['name'] == '').any():
+            raise ValueError("Los datos no pueden contener valores nulos o vacíos.")
+
+        new_jobs = [
+            Job(id=row['id'], name=row['name']) for _, row in jobs_df.iterrows()
+        ]
+
+        self.session.bulk_save_objects(new_jobs)
+        self.session.commit()
+        return [job.name for job in new_jobs]
+
     def close(self):
         self.session.close()
