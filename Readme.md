@@ -315,5 +315,5 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
   - **Respuesta**: Mensaje de éxito o error.
 
 ### Referencias
-https://github.com/lharroyo/PythonRest.git
-https://hub.docker.com/repository/docker/lharroyoa/pythonemployees
+#### https://github.com/lharroyo/PythonRest.git
+#### https://hub.docker.com/repository/docker/lharroyoa/pythonemployees
