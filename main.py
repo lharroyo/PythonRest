@@ -27,4 +27,4 @@ app.register_blueprint(jobs_bp, url_prefix='/jobs')
 app.register_blueprint(hired_employees_bp, url_prefix='/hiredemployees')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=8080)
