@@ -16,7 +16,6 @@ job_service = JobsService(engine)
 hired_employees_service = HiredEmployeesService(engine)
 
 app = Flask(__name__)
-app.config["DEBUG"] = True
 
 init_departments_controller(department_service)
 init_jobs_controller(job_service)
