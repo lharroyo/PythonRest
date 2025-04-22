@@ -27,81 +27,291 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
 
 ## Endpoints y Métodos de Consumo
 
-#### Cloud endpoint: https://pythonrest.azurewebsites.net/
+**Cloud endpoint**: `https://pythonrest.azurewebsites.net/`
 
-### Departments /departments
+
+### Departments `/departments`
+
 
 - **GET /**: Obtener todos los departamentos.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/departments/
+
+    ```
+
   - **Respuesta**: Lista de departamentos.
-  
+
+
 - **GET /<int:id>**: Obtener un departamento por ID.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/departments/1
+
+    ```
+
   - **Respuesta**: Detalles del departamento o error si no se encuentra.
 
+
 - **POST /**: Crear un nuevo departamento.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X POST https://pythonrest.azurewebsites.net/departments/ -H "Content-Type: application/json" -d '{"name": "Nuevo Departamento"}'
+
+    ```
+
   - **Entrada**: JSON con el nombre del departamento.
+
   - **Respuesta**: Detalles del departamento creado.
 
+
 - **PUT /<int:id>**: Actualizar un departamento existente.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X PUT https://pythonrest.azurewebsites.net/departments/1 -H "Content-Type: application/json" -d '{"name": "Departamento Actualizado"}'
+
+    ```
+
   - **Entrada**: JSON con el nuevo nombre del departamento.
+
   - **Respuesta**: Detalles del departamento actualizado o error si no se encuentra.
 
+
 - **DELETE /<int:id>**: Eliminar un departamento.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X DELETE https://pythonrest.azurewebsites.net/departments/1
+
+    ```
+
   - **Respuesta**: Mensaje de éxito o error si no se encuentra.
+
 
 - **POST /uploadbybulk**: Cargar departamentos en masa desde un archivo CSV.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X POST https://pythonrest.azurewebsites.net/departments/uploadbybulk -F "file=@path/to/your/file.csv"
+
+    ```
+
   - **Entrada**: Archivo CSV.
+
   - **Respuesta**: Mensaje de éxito o error.
 
-### Hired Employees /hiredemployees
+### Hired Employees `/hiredemployees`
+
 
 - **GET /**: Obtener todos los empleados contratados.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/hiredemployees/
+
+    ```
+
   - **Respuesta**: Lista de empleados contratados.
 
+
 - **GET /<int:id>**: Obtener un empleado contratado por ID.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/hiredemployees/1
+
+    ```
+
   - **Respuesta**: Detalles del empleado o error si no se encuentra.
 
+
 - **POST /**: Crear un nuevo empleado contratado.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X POST https://pythonrest.azurewebsites.net/hiredemployees/ -H "Content-Type: application/json" -d '{"name": "Nuevo Empleado", "hire_date": "2023-01-01", "job_id": 1, "department_id": 1}'
+
+    ```
+
   - **Entrada**: JSON con los detalles del empleado.
+
   - **Respuesta**: Detalles del empleado creado.
 
+
 - **PUT /<int:id>**: Actualizar un empleado contratado existente.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X PUT https://pythonrest.azurewebsites.net/hiredemployees/1 -H "Content-Type: application/json" -d '{"name": "Empleado Actualizado", "hire_date": "2023-01-15", "job_id": 2, "department_id": 1}'
+
+    ```
+
   - **Entrada**: JSON con los nuevos detalles del empleado.
+
   - **Respuesta**: Detalles del empleado actualizado o error si no se encuentra.
 
+
 - **DELETE /<int:id>**: Eliminar un empleado contratado.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X DELETE https://pythonrest.azurewebsites.net/hiredemployees/1
+
+    ```
+
   - **Respuesta**: Mensaje de éxito o error si no se encuentra.
+
 
 - **GET /byquarter**: Obtener contrataciones por trabajo y departamento por trimestre en 2021.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/hiredemployees/byquarter
+
+    ```
+
   - **Respuesta**: Lista de contrataciones por trimestre.
 
+
 - **GET /byaveragehires**: Obtener departamentos con contrataciones por encima del promedio en 2021.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/hiredemployees/byaveragehires
+
+    ```
+
   - **Respuesta**: Lista de departamentos.
 
+
 - **POST /uploadbybulk**: Cargar empleados contratados en masa desde un archivo CSV.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X POST https://pythonrest.azurewebsites.net/hiredemployees/uploadbybulk -F "file=@path/to/your/file.csv"
+
+    ```
+
   - **Entrada**: Archivo CSV.
+
   - **Respuesta**: Mensaje de éxito o error.
 
-### Jobs /jobs
+### Jobs `/jobs`
+
 
 - **GET /**: Obtener todos los trabajos.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/jobs/
+
+    ```
+
   - **Respuesta**: Lista de trabajos.
 
+
 - **GET /<int:id>**: Obtener un trabajo por ID.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X GET https://pythonrest.azurewebsites.net/jobs/1
+
+    ```
+
   - **Respuesta**: Detalles del trabajo o error si no se encuentra.
 
+
 - **POST /**: Crear un nuevo trabajo.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X POST https://pythonrest.azurewebsites.net/jobs/ -H "Content-Type: application/json" -d '{"name": "Nuevo Trabajo"}'
+
+    ```
+
   - **Entrada**: JSON con el nombre del trabajo.
+
   - **Respuesta**: Detalles del trabajo creado.
 
+
 - **PUT /<int:id>**: Actualizar un trabajo existente.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X PUT https://pythonrest.azurewebsites.net/jobs/1 -H "Content-Type: application/json" -d '{"name": "Trabajo Actualizado"}'
+
+    ```
+
   - **Entrada**: JSON con el nuevo nombre del trabajo.
+
   - **Respuesta**: Detalles del trabajo actualizado o error si no se encuentra.
 
+
 - **DELETE /<int:id>**: Eliminar un trabajo.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X DELETE https://pythonrest.azurewebsites.net/jobs/1
+
+    ```
+
   - **Respuesta**: Mensaje de éxito o error si no se encuentra.
 
+
 - **POST /uploadbybulk**: Cargar trabajos en masa desde un archivo CSV.
+
+  - **Curl**:
+
+    ```bash
+
+    curl -X POST https://pythonrest.azurewebsites.net/jobs/uploadbybulk -F "file=@path/to/your/file.csv"
+
+    ```
+
   - **Entrada**: Archivo CSV.
+
   - **Respuesta**: Mensaje de éxito o error.
 
 ### Referencias
