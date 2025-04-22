@@ -101,5 +101,3 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
 - **POST /uploadbybulk**: Cargar trabajos en masa desde un archivo CSV.
   - **Entrada**: Archivo CSV.
   - **Respuesta**: Mensaje de éxito o error.
-
-## Instalación y
