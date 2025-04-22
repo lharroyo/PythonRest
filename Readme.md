@@ -27,6 +27,8 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
 
 ## Endpoints y Métodos de Consumo
 
+#### Cloud endpoint: https://pythonrest.azurewebsites.net/
+
 ### Departments
 
 - **GET /**: Obtener todos los departamentos.
