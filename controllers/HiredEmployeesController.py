@@ -1,4 +1,9 @@
+import os
+import pandas as pd
+
 from flask import Blueprint, jsonify, request
+from werkzeug.utils import secure_filename
+
 from services.HiredEmployeesService import HiredEmployeesService  # Asegúrate de que la ruta sea correcta
 from datetime import datetime
 
@@ -133,3 +138,30 @@ def init_hired_employees_controller(service: HiredEmployeesService):
             "results": result_list
         }), 200
 
+    @hired_employees_bp.route('/uploadbybulk', methods=['POST'])
+    def upload_by_bulk():
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part"}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join('data/', filename)
+            file.save(file_path)
+            try:
+                jobs_df = pd.read_csv(file_path, header=None,
+                                      names=['id', 'name', 'hire_date', 'department_id', 'job_id'])
+
+                jobs_df['hire_date'] = pd.to_datetime(jobs_df['hire_date'], errors='coerce')
+
+                created_employees = service.create_hired_employees_bulk(jobs_df)
+                return jsonify(
+                    {"message": "Hired employees uploaded successfully", "employees": created_employees}), 201
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Invalid file format"}), 400
+
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'csv'}

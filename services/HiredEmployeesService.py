@@ -1,10 +1,13 @@
+from sqlite3 import IntegrityError
+
 from sqlalchemy.orm import Session
-from sqlalchemy import func, extract, Integer
+from sqlalchemy import func, Integer
 from models.HiredEmployeesModel import HiredEmployee
 from models.JobModel import Job
 from models.DepartmentModel import Department
 from datetime import datetime
 from typing import List, Optional
+import pandas as pd
 
 class HiredEmployeesService:
     def __init__(self, engine):
@@ -88,6 +91,47 @@ class HiredEmployeesService:
         )
 
         return result
+
+    def create_hired_employees_bulk(self, hiredemployees_df):
+        average_date = hiredemployees_df['hire_date'].mean() if 'hire_date' in hiredemployees_df.columns else None
+
+        additional_df = hiredemployees_df[['department_id', 'job_id']].dropna()
+        new_hires = []
+
+        for _, row in hiredemployees_df.iterrows():
+            if pd.isnull(row['name']) or row['name'] == '':
+                continue
+
+            date = row['hire_date'] if pd.notnull(row['hire_date']) else average_date
+
+            department = row['department_id'] if pd.notnull(row['department_id']) else None
+            job = row['job_id'] if pd.notnull(row['job_id']) else 184
+
+            if department is None:
+                matching_row = additional_df[additional_df['job_id'] == job]
+                if not matching_row.empty:
+                    department = matching_row['department_id'].iloc[0]
+
+            if department is None:
+                department = 13
+
+            new_hires.append(HiredEmployee(
+                id=row['id'],
+                name=row['name'],
+                hire_date=date,
+                department_id=department,
+                job_id=job
+            ))
+
+        try:
+            self.session.bulk_save_objects(new_hires)
+            self.session.commit()
+        except IntegrityError as e:
+            self.session.rollback()
+            print(f"Error al insertar registros: {e}")
+
+        #print(additional_df)
+        return [HiredEmployee.name for HiredEmployee in new_hires]
 
     def close(self):
         self.session.close()

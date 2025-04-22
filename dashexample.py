@@ -19,14 +19,11 @@ def fetch_average_hires_data():
     else:
         return {"message": "Error fetching data", "results": []}
 
-# Obtener datos de contrataciones
 hires_data = fetch_hires_data()
 hires_results = hires_data.get("results", [])
 
-# Convertir los resultados a un DataFrame
 df_hires = pd.DataFrame(hires_results)
 
-# Pivotar el DataFrame para obtener las columnas Q1, Q2, Q3, Q4
 df_hires_pivot = df_hires.pivot_table(
     index=['department', 'job'],
     columns='quarter',
