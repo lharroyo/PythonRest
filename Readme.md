@@ -29,7 +29,7 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
 
 #### Cloud endpoint: https://pythonrest.azurewebsites.net/
 
-### Departments
+### Departments /departments
 
 - **GET /**: Obtener todos los departamentos.
   - **Respuesta**: Lista de departamentos.
@@ -52,7 +52,7 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
   - **Entrada**: Archivo CSV.
   - **Respuesta**: Mensaje de éxito o error.
 
-### Hired Employees
+### Hired Employees /hiredemployees
 
 - **GET /**: Obtener todos los empleados contratados.
   - **Respuesta**: Lista de empleados contratados.
@@ -81,7 +81,7 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
   - **Entrada**: Archivo CSV.
   - **Respuesta**: Mensaje de éxito o error.
 
-### Jobs
+### Jobs /jobs
 
 - **GET /**: Obtener todos los trabajos.
   - **Respuesta**: Lista de trabajos.
