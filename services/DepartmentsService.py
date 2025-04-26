@@ -38,13 +38,22 @@ class DepartmentService:
         if departments_df.isnull().values.any() or (departments_df['name'] == '').any():
             raise ValueError("Los datos no pueden contener valores nulos o vacíos.")
 
-        new_departments = [
-            Department(id=row['id'], name=row['name']) for _, row in departments_df.iterrows()
-        ]
+        existing_ids = {
+            dept.id for dept in self.session.query(Department.id).all()
+        }
 
-        self.session.bulk_save_objects(new_departments)
-        self.session.commit()
-        return [dept.name for dept in new_departments]
+        new_departments = []
+        for _, row in departments_df.iterrows():
+            if row['id'] not in existing_ids:
+                new_departments.append(Department(id=row['id'], name=row['name']))
+
+        try:
+            self.session.bulk_save_objects(new_departments)
+            self.session.commit()
+            return [dept.name for dept in new_departments]
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
     def close(self):
         self.session.close()

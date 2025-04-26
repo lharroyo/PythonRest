@@ -34,15 +34,24 @@ class JobsService:
         return job
 
     def create_jobs_bulk(self, jobs_df):
-        if jobs_df.isnull().values.any() or (jobs_df['name'] == '').any():
-            raise ValueError("Los datos no pueden contener valores nulos o vacíos.")
+        cleaned_df = jobs_df.dropna(subset=['id', 'name'])
+        cleaned_df = cleaned_df[cleaned_df['name'].str.strip() != '']
+
+        existing_ids = {job.id for job in self.session.query(Job.id).all()}
 
         new_jobs = [
-            Job(id=row['id'], name=row['name']) for _, row in jobs_df.iterrows()
+            Job(id=row['id'], name=row['name'])
+            for _, row in cleaned_df.iterrows()
+            if row['id'] not in existing_ids
         ]
 
-        self.session.bulk_save_objects(new_jobs)
-        self.session.commit()
+        try:
+            self.session.bulk_save_objects(new_jobs)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
         return [job.name for job in new_jobs]
 
     def close(self):
