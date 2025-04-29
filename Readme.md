@@ -28,6 +28,7 @@ Este proyecto es una API RESTful para la gestión de departamentos, empleados co
 ## Endpoints y Métodos de Consumo
 
 **Cloud endpoint**: `https://pythonrest.azurewebsites.net/`
+**Alternative Cloud endpoint**: `https://pythonrest-production.up.railway.app/`
 
 
 ### Departments `/departments`
