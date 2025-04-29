@@ -13,7 +13,15 @@ import os
 
 load_dotenv()
 
-engine = create_engine("sqlite:data/employees.db")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+host = os.getenv("DB_HOST")
+port = os.getenv("DB_PORT")
+database = os.getenv("DB_NAME")
+
+engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}",
+    connect_args={'connect_timeout': 60},
+    pool_recycle=3600)
 Base.metadata.create_all(engine)
 
 department_service = DepartmentService(engine)
