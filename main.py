@@ -13,7 +13,7 @@ import os
 
 load_dotenv()
 
-engine = create_engine("sqlite:///data/employees.db")
+engine = create_engine("sqlite:data/employees.db")
 Base.metadata.create_all(engine)
 
 department_service = DepartmentService(engine)
